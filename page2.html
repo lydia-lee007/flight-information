@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>搭乗者名簿</title>
+    <script>
+        function fetchPassengers() {
+            let date = document.getElementById("date").value;
+            let flightName = document.getElementById("flight_name").value;
+
+            if (!date || !flightName) {
+                alert("日付と便名を入力してください！");
+                return;
+            }
+
+            fetch(`get_passengers.php?date=${date}&flight_name=${flightName}`)
+            .then(response => response.json())
+            .then(data => {
+                let table = document.getElementById('passenger-table');
+                table.innerHTML = "<tr><th>座席クラス</th><th>顧客番号</th><th>氏名</th></tr>";
+                
+                if (data.length === 0) {
+                    table.innerHTML += "<tr><td colspan='3'>該当するデータがありません。</td></tr>";
+                } else {
+                    data.forEach(passenger => {
+                        let row = `<tr>
+                            <td>${passenger.seat_class}</td>
+                            <td>${passenger.customer_id}</td>
+                            <td>${passenger.customer_name}</td>
+                        </tr>`;
+                        table.innerHTML += row;
+                    });
+                }
+            })
+            .catch(error => console.error("データ取得エラー:", error));
+        }
+    </script>
+</head>
+<body>
+    <h2>搭乗者名簿</h2>
+    
+    <!-- 🔹 用户输入框 -->
+    <label>日付：</label>
+    <input type="date" id="date">
+    <label>便名：</label>
+    <input type="text" id="flight_name" placeholder="例：RAC861">
+    <button onclick="fetchPassengers()">検索</button>
+
+    <table border="1" id="passenger-table"></table>
+</body>
+</html>
+

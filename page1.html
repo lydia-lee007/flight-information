@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>搭乗者名簿</title>
+    <script>
+        function fetchPassengers() {
+            fetch('get_passengers.php')
+            .then(response => response.json())
+            .then(data => {
+                let table = document.getElementById('passenger-table');
+                table.innerHTML = "<tr><th>座席クラス</th><th>顧客番号</th><th>氏名</th></tr>";
+                data.forEach(passenger => {
+                    let row = `<tr>
+                        <td>${passenger.seat_class}</td>
+                        <td>${passenger.customer_id}</td>
+                        <td>${passenger.customer_name}</td>
+                    </tr>`;
+                    table.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("データ取得エラー:", error));
+        }
+    </script>
+</head>
+<body onload="fetchPassengers()">
+    <h2>搭乗者名簿</h2>
+    <p>日付: 2025年3月1日</p>
+    <p>便名: RAC861</p>
+    <table border="1" id="passenger-table"></table>
+</body>
+</html>
+
